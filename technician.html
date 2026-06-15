@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Technician Portal - BugBuster Pro</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body style="background:linear-gradient(135deg,#f0fdf4 0%,#dcfce7 50%,#f0fdf4 100%); min-height:100vh;">
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- ========= LOGIN SCREEN ========= -->
+<div id="login-screen" class="login-screen">
+  <div class="login-card">
+    <div class="login-icon">🔧</div>
+    <div class="login-title">Technician Portal</div>
+    <div class="login-sub">BugBuster Pro Service Management</div>
+    <div id="login-msg"></div>
+    <div class="form-group">
+      <label class="form-label">Email</label>
+      <input type="email" class="form-input" id="tech-email" placeholder="tech@bugbuster.com" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Password</label>
+      <input type="password" class="form-input" id="tech-password" placeholder="••••••••" />
+    </div>
+    <button class="btn btn-primary btn-full" id="btn-tech-login">Login</button>
+    <p style="text-align:center; margin-top:1rem; font-size:0.82rem; color:#64748b;">
+      Default: <strong>budi@bugbuster.com</strong> / <strong>tech123</strong>
+    </p>
+    <p style="text-align:center; margin-top:0.5rem; font-size:0.85rem;">
+      <a href="/" style="color:#0b8a4f; font-weight:600;">← Kembali ke Customer Portal</a>
+    </p>
+  </div>
+</div>
+
+<!-- ========= DASHBOARD ========= -->
+<div id="dashboard" style="display:none;">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/technician" class="logo">
+          <div class="logo-icon">🔧</div>
+          <div class="logo-text">
+            <h1>BugBuster Pro</h1>
+            <p>Technician Portal</p>
+          </div>
+        </a>
+        <div class="header-actions">
+          <span style="font-size:0.875rem; color:#64748b; font-weight:600;" id="tech-welcome"></span>
+          <button class="btn btn-outline btn-sm" id="btn-tech-logout">Logout</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding:2rem 1.5rem;">
+
+    <div style="margin-bottom:2rem;">
+      <h2 style="font-size:2rem; font-weight:800;">My Tasks</h2>
+      <p style="color:#64748b;">Lihat dan kelola tugas layanan yang ditugaskan kepada Anda</p>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('tab-assigned', this)">📋 Assigned</button>
+      <button class="tab-btn" onclick="switchTab('tab-inprogress', this)">⚙️ In Progress</button>
+      <button class="tab-btn" onclick="switchTab('tab-completed', this)">✅ Completed</button>
+    </div>
+
+    <div class="tab-panel active" id="tab-assigned">
+      <div id="list-assigned"></div>
+    </div>
+    <div class="tab-panel" id="tab-inprogress">
+      <div id="list-inprogress"></div>
+    </div>
+    <div class="tab-panel" id="tab-completed">
+      <div id="list-completed"></div>
+    </div>
+
+  </main>
+</div>
+
+<!-- SERVICE REPORT MODAL -->
+<div class="modal-overlay" id="modal-report">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <div class="modal-title">Submit Service Report</div>
+      <button class="modal-close" onclick="closeModal('modal-report')">×</button>
+    </div>
+    <p class="modal-desc" id="report-booking-label"></p>
+    <input type="hidden" id="report-booking-id" />
+    <input type="hidden" id="report-pest-type-id" />
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem;">
+      <div class="form-group" style="margin:0;">
+        <label class="form-label">Jenis Hama *</label>
+        <select class="form-select" id="report-pest">
+          <option value="">-- Pilih --</option>
+        </select>
+      </div>
+      <div class="form-group" style="margin:0;">
+        <label class="form-label">Status Layanan *</label>
+        <select class="form-select" id="report-status" onchange="toggleFollowUp()">
+          <option value="COMPLETED">Selesai (Completed)</option>
+          <option value="NEED_FOLLOW_UP">Perlu Tindak Lanjut (Follow Up)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Tindakan yang Dilakukan *</label>
+      <textarea class="form-textarea" id="report-action" placeholder="Deskripsikan tindakan pengendalian hama yang dilakukan..." rows="3"></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Bahan / Kimia yang Digunakan</label>
+      <input type="text" class="form-input" id="report-materials" placeholder="Contoh: Pyrethrin spray, bait stations..." />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Area yang Ditangani *</label>
+      <input type="text" class="form-input" id="report-area" placeholder="Contoh: Dapur, ruang tamu, seluruh rumah..." />
+    </div>
+    <div class="form-group" id="followup-date-group" style="display:none;">
+      <label class="form-label">Tanggal Follow Up</label>
+      <input type="date" class="form-input" id="report-followup" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Catatan Teknisi *</label>
+      <textarea class="form-textarea" id="report-notes" placeholder="Temuan tambahan, saran, rekomendasi untuk pelanggan..." rows="3"></textarea>
+    </div>
+    <button class="btn btn-primary btn-full" id="btn-submit-report">Submit Laporan</button>
+  </div>
+</div>
+
+<script src="technician.js"></script>
+</body>
+</html>

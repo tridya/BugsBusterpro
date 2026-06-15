@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Portal - BugBuster Pro</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body style="background:#f1f5f9; min-height:100vh;">
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- ========= LOGIN SCREEN ========= -->
+<div id="login-screen" class="login-screen">
+  <div class="login-card">
+    <div class="login-icon">🛡️</div>
+    <div class="login-title">Admin Portal</div>
+    <div class="login-sub">BugBuster Pro Management System</div>
+    <div id="login-msg"></div>
+    <div class="form-group">
+      <label class="form-label">Email</label>
+      <input type="email" class="form-input" id="admin-email" placeholder="admin@bugbuster.com" value="admin@bugbuster.com" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Password</label>
+      <input type="password" class="form-input" id="admin-password" placeholder="••••••••" value="admin123" />
+    </div>
+    <button class="btn btn-primary btn-full" id="btn-admin-login">Login</button>
+    <p style="text-align:center; margin-top:1rem; font-size:0.85rem; color:#64748b;">
+      <a href="/" style="color:#0b8a4f; font-weight:600;">← Kembali ke Customer Portal</a>
+    </p>
+  </div>
+</div>
+
+<!-- ========= DASHBOARD ========= -->
+<div id="dashboard" style="display:none;">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/admin" class="logo">
+          <div class="logo-icon">🛡️</div>
+          <div class="logo-text">
+            <h1>BugBuster Pro</h1>
+            <p>Admin Portal</p>
+          </div>
+        </a>
+        <div class="header-actions">
+          <span style="font-size:0.875rem; color:#64748b; font-weight:600;" id="admin-welcome"></span>
+          <button class="btn btn-outline btn-sm" id="btn-admin-logout">Logout</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding:2rem 1.5rem;">
+
+    <!-- STATS CARDS -->
+    <div id="stats-container" style="display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-bottom:2rem;"></div>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('tab-bookings', this)">📋 Bookings</button>
+      <button class="tab-btn" onclick="switchTab('tab-technicians', this)">👷 Technicians</button>
+      <button class="tab-btn" onclick="switchTab('tab-stats', this)">📊 Statistics</button>
+    </div>
+
+    <!-- TAB: BOOKINGS -->
+    <div class="tab-panel active" id="tab-bookings">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem;">
+        <h2 style="font-size:1.5rem; font-weight:800;">Service Bookings</h2>
+        <button class="btn btn-outline btn-sm" onclick="fetchBookings()">🔄 Refresh</button>
+      </div>
+      <div id="bookings-list"></div>
+    </div>
+
+    <!-- TAB: TECHNICIANS -->
+    <div class="tab-panel" id="tab-technicians">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem;">
+        <h2 style="font-size:1.5rem; font-weight:800;">Technicians</h2>
+        <button class="btn btn-outline btn-sm" onclick="fetchTechnicians()">🔄 Refresh</button>
+      </div>
+      <div id="technicians-list"></div>
+    </div>
+
+    <!-- TAB: STATS -->
+    <div class="tab-panel" id="tab-stats">
+      <h2 style="font-size:1.5rem; font-weight:800; margin-bottom:1.25rem;">Dashboard Statistics</h2>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;">
+        <div class="card">
+          <div class="card-header"><strong>Customer Satisfaction</strong></div>
+          <div class="card-body" style="text-align:center;">
+            <div style="font-size:4rem; font-weight:800; color:#0b8a4f;" id="avg-rating">-</div>
+            <p style="color:#64748b; margin-bottom:1rem;">Average Rating</p>
+            <div id="rating-stars" style="justify-content:center; display:flex; gap:0.25rem; font-size:1.75rem; color:#d1d5db;"></div>
+            <p style="color:#64748b; font-size:0.85rem; margin-top:0.75rem;" id="total-feedback"></p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><strong>Status Overview</strong></div>
+          <div class="card-body" id="status-overview"></div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ASSIGN TECHNICIAN MODAL -->
+<div class="modal-overlay" id="modal-assign">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Assign Teknisi</div>
+      <button class="modal-close" onclick="closeModal('modal-assign')">×</button>
+    </div>
+    <p class="modal-desc" id="assign-booking-label"></p>
+    <input type="hidden" id="assign-booking-id" />
+    <div class="form-group">
+      <label class="form-label">Pilih Teknisi</label>
+      <select class="form-select" id="assign-tech-select">
+        <option value="">-- Pilih Teknisi --</option>
+      </select>
+    </div>
+    <button class="btn btn-primary btn-full" id="btn-do-assign">Assign Teknisi</button>
+  </div>
+</div>
+
+<script src="admin.js"></script>
+</body>
+</html>

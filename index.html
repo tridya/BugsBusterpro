@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BugBuster Pro - Pest Control Management System</title>
+  <meta name="description" content="Layanan pembasmi hama profesional bersertifikasi untuk rumah dan kantor." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- SPLASH SCREEN -->
+<div class="splash" id="splash">
+  <div class="splash-icon">🛡️</div>
+  <h2>BugBuster Pro</h2>
+  <p>Pest Management</p>
+</div>
+
+<!-- TOAST NOTIFICATION -->
+<div id="toast"></div>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="container">
+    <div class="header-inner">
+      <a href="#" class="logo">
+        <div class="logo-icon">🛡️</div>
+        <div class="logo-text">
+          <h1>BugBuster Pro</h1>
+          <p>Pest Management</p>
+        </div>
+      </a>
+      <nav class="header-nav">
+        <a href="#">Home</a>
+        <a href="#services-section">Services</a>
+        <a href="#booking-section">Book Now</a>
+        <a href="#" id="nav-mybookings" style="display:none">My Bookings</a>
+      </nav>
+      <div class="header-actions">
+        <a href="/admin" class="btn btn-outline btn-sm">Admin Portal</a>
+        <a href="/technician" class="btn btn-outline btn-sm">Tech Portal</a>
+        <button class="btn btn-primary btn-sm" id="btn-auth">Sign In</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- GLOBAL MESSAGE -->
+<div id="global-msg" style="display:none; position:fixed; top:5rem; right:1.5rem; z-index:500; width:22rem;"></div>
+
+<!-- HERO SECTION -->
+<section class="hero" id="hero-section">
+  <div class="container">
+    <div class="hero-grid">
+      <div class="hero-content">
+        <div class="hero-badge">🛡️ Trusted Pest Solutions</div>
+        <h2>Professional <span>Pest Control</span> Solutions For Your Property</h2>
+        <p>Layanan pembasmian hama bersertifikasi untuk perumahan dan perkantoran. Aman, cepat, efektif, dan bergaransi.</p>
+        <div class="hero-btns">
+          <a href="#booking-section" class="btn btn-primary btn-lg">Book Free Inspection</a>
+          <a href="#services-section" class="btn btn-outline btn-lg">Explore Treatments</a>
+        </div>
+        <div class="hero-stats">
+          <div><div class="stat-num">99%</div><div class="stat-label">Satisfaction Rate</div></div>
+          <div><div class="stat-num">15k+</div><div class="stat-label">Homes Cleared</div></div>
+          <div><div class="stat-num">24/7</div><div class="stat-label">Support Access</div></div>
+        </div>
+      </div>
+
+      <!-- TRACK ORDER WIDGET -->
+      <div class="track-widget">
+        <h3 style="font-size:1.1rem; font-weight:800; margin-bottom:0.25rem;">Lacak Status Layanan</h3>
+        <p style="font-size:0.8rem; color:#64748b; margin-bottom:1.25rem;">Masukkan nomor booking untuk melihat status layanan Anda secara real-time.</p>
+        <div class="form-group">
+          <label class="form-label">Nomor Booking Order</label>
+          <input type="text" class="form-input" id="track-input" placeholder="e.g. BB-1234567890" />
+        </div>
+        <button class="btn btn-primary btn-full" id="btn-track">Lacak Pesanan</button>
+        <div id="track-result" style="display:none" class="track-result"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES SECTION -->
+<section class="services-section" id="services-section">
+  <div class="container">
+    <div class="section-header">
+      <h2>Our Pest Control Treatments</h2>
+      <p>Kami melayani penanganan berbagai jenis hama perkotaan dengan formulasi khusus yang efektif dan aman bagi keluarga serta lingkungan.</p>
+    </div>
+    <div class="services-grid" id="services-grid">
+      <!-- Filled by JavaScript -->
+    </div>
+  </div>
+</section>
+
+<!-- BOOKING SECTION -->
+<section class="booking-section" id="booking-section">
+  <div class="container">
+    <div class="booking-grid">
+      <div class="booking-info">
+        <h2>Schedule a Service</h2>
+        <p>Jadwalkan kunjungan teknisi ahli kami langsung ke kediaman Anda. Lengkapi formulir untuk memulai inspeksi.</p>
+        <div class="booking-tip">
+          <h4>⚡ Perlu Penanganan Cepat?</h4>
+          <p>Hubungi tim darurat 24 jam kami di <strong>+62 21 1234 5678</strong> untuk mitigasi hama membahayakan secara instan.</p>
+        </div>
+      </div>
+      <div class="card" id="booking-form-card">
+        <div class="card-body">
+          <div id="booking-login-prompt" style="text-align:center; padding:2rem 0;">
+            <div style="font-size:3rem; margin-bottom:1rem;">⚠️</div>
+            <h3 style="font-weight:800; margin-bottom:0.5rem;">Login Required</h3>
+            <p style="color:#64748b; font-size:0.875rem; margin-bottom:1.25rem;">Silakan login terlebih dahulu untuk melanjutkan pemesanan layanan.</p>
+            <button class="btn btn-primary btn-full" id="btn-login-prompt">Login / Register</button>
+          </div>
+          <div id="booking-form" style="display:none">
+            <h3 style="font-size:1.1rem; font-weight:800; margin-bottom:1.25rem;">Form Pemesanan Layanan</h3>
+            <div class="form-group">
+              <label class="form-label">Jenis Hama *</label>
+              <select class="form-select" id="booking-pest"></select>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+              <div class="form-group">
+                <label class="form-label">Tanggal Layanan *</label>
+                <input type="date" class="form-input" id="booking-date" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Waktu *</label>
+                <input type="time" class="form-input" id="booking-time" value="09:00" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Alamat Lengkap *</label>
+              <input type="text" class="form-input" id="booking-address" placeholder="Jl. Contoh No. 123, Kota..." />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Catatan Tambahan</label>
+              <textarea class="form-textarea" id="booking-notes" placeholder="Deskripsi masalah, lokasi spesifik, dll..."></textarea>
+            </div>
+            <button class="btn btn-primary btn-full" id="btn-submit-booking">Buat Booking</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DASHBOARD (My Bookings - shown when logged in) -->
+<section id="dashboard-section" style="display:none; padding:3rem 0; background:#f8fafc;">
+  <div class="container">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+      <h2 style="font-size:1.75rem; font-weight:800;" id="dashboard-title">My Bookings</h2>
+      <button class="btn btn-outline btn-sm" onclick="fetchMyBookings()">🔄 Refresh</button>
+    </div>
+    <div id="dashboard-bookings">
+      <div class="empty-state"><div class="empty-icon">📋</div><p>Belum ada booking.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p>© 2025 BugBuster Pro. Professional Pest Control Management System.</p>
+</footer>
+
+<!-- ===================== MODALS ===================== -->
+
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="modal-auth">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="auth-modal-title">Sign In</div>
+      <button class="modal-close" onclick="closeModal('modal-auth')">×</button>
+    </div>
+    <div id="auth-login-form">
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-input" id="login-email" placeholder="email@example.com" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input type="password" class="form-input" id="login-password" placeholder="••••••••" />
+      </div>
+      <button class="btn btn-primary btn-full" id="btn-do-login">Masuk</button>
+      <p style="text-align:center; margin-top:1rem; font-size:0.85rem; color:#64748b;">
+        Belum punya akun? <a href="#" onclick="showRegister()" style="color:#0b8a4f; font-weight:700;">Daftar Sekarang</a>
+      </p>
+    </div>
+    <div id="auth-register-form" style="display:none">
+      <div class="form-group">
+        <label class="form-label">Nama Lengkap *</label>
+        <input type="text" class="form-input" id="reg-name" placeholder="Nama Anda" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email *</label>
+        <input type="email" class="form-input" id="reg-email" placeholder="email@example.com" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">No. Telepon *</label>
+        <input type="text" class="form-input" id="reg-phone" placeholder="081234567890" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Alamat *</label>
+        <input type="text" class="form-input" id="reg-address" placeholder="Alamat lengkap Anda" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password *</label>
+        <input type="password" class="form-input" id="reg-password" placeholder="Min. 6 karakter" />
+      </div>
+      <button class="btn btn-primary btn-full" id="btn-do-register">Daftar</button>
+      <p style="text-align:center; margin-top:1rem; font-size:0.85rem; color:#64748b;">
+        Sudah punya akun? <a href="#" onclick="showLogin()" style="color:#0b8a4f; font-weight:700;">Masuk</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- SERVICE DETAIL MODAL -->
+<div class="modal-overlay" id="modal-service">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="service-modal-title"></div>
+      <button class="modal-close" onclick="closeModal('modal-service')">×</button>
+    </div>
+    <div id="service-modal-body"></div>
+    <button class="btn btn-primary btn-full" style="margin-top:1.5rem;" id="btn-book-from-service">Book This Service</button>
+  </div>
+</div>
+
+<!-- FEEDBACK MODAL -->
+<div class="modal-overlay" id="modal-feedback">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Berikan Feedback</div>
+      <button class="modal-close" onclick="closeModal('modal-feedback')">×</button>
+    </div>
+    <p class="modal-desc" id="feedback-booking-label"></p>
+    <input type="hidden" id="feedback-booking-id" />
+    <div class="form-group">
+      <label class="form-label">Rating Layanan *</label>
+      <div class="stars" id="feedback-stars">
+        <span class="star active" data-val="1">★</span>
+        <span class="star active" data-val="2">★</span>
+        <span class="star active" data-val="3">★</span>
+        <span class="star active" data-val="4">★</span>
+        <span class="star active" data-val="5">★</span>
+      </div>
+      <input type="hidden" id="feedback-rating" value="5" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Komentar / Ulasan</label>
+      <textarea class="form-textarea" id="feedback-text" placeholder="Bagaimana pengalaman layanan Anda?"></textarea>
+    </div>
+    <button class="btn btn-primary btn-full" id="btn-submit-feedback">Kirim Feedback</button>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
