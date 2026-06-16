@@ -5,6 +5,54 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Portal - BugBuster Pro</title>
   <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* Print Styles */
+    @media print {
+      body {
+        background: white !important;
+        color: black !important;
+      }
+      .header, .tabs, .btn, .form-group, #stats-container, .card-header button, .modal-overlay, .booking-item-actions {
+        display: none !important;
+      }
+      main.container {
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: 100% !important;
+      }
+      .card {
+        border: none !important;
+        box-shadow: none !important;
+        margin-bottom: 2rem !important;
+      }
+      .tab-panel {
+        display: block !important; /* Force show the selected tab when printing */
+      }
+      .tab-panel:not(.active) {
+        display: none !important;
+      }
+      .print-only {
+        display: block !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .booking-item {
+        page-break-inside: avoid;
+        border: 1px solid #cbd5e1 !important;
+        margin-bottom: 1.5rem !important;
+      }
+      /* Ensure charts scale well for print */
+      canvas {
+        max-width: 100% !important;
+        height: auto !important;
+      }
+    }
+    .print-only {
+      display: none;
+    }
+  </style>
 </head>
 <body style="background:#f1f5f9; min-height:100vh;">
 
@@ -65,6 +113,7 @@
       <button class="tab-btn active" onclick="switchTab('tab-bookings', this)">📋 Bookings</button>
       <button class="tab-btn" onclick="switchTab('tab-technicians', this)">👷 Technicians</button>
       <button class="tab-btn" onclick="switchTab('tab-stats', this)">📊 Statistics</button>
+      <button class="tab-btn" onclick="switchTab('tab-reports', this)">📄 Reports</button>
     </div>
 
     <!-- TAB: BOOKINGS -->
@@ -87,7 +136,32 @@
 
     <!-- TAB: STATS -->
     <div class="tab-panel" id="tab-stats">
-      <h2 style="font-size:1.5rem; font-weight:800; margin-bottom:1.25rem;">Dashboard Statistics</h2>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem;">
+        <h2 style="font-size:1.5rem; font-weight:800; margin:0;">Dashboard Statistics</h2>
+        <div class="print-only" style="font-size: 0.9rem; color: #64748b;">
+          Dicetak pada: <span id="print-date-display"></span>
+        </div>
+      </div>
+
+      <!-- Date Filter Bar for Stats -->
+      <div class="card no-print" style="margin-bottom:1.5rem;">
+        <div class="card-body" style="display:flex; gap:1rem; align-items:flex-end; flex-wrap:wrap; padding:1rem;">
+          <div class="form-group" style="margin:0; flex:1; min-width:150px;">
+            <label class="form-label">Tanggal Mulai</label>
+            <input type="date" class="form-input" id="stats-start-date" />
+          </div>
+          <div class="form-group" style="margin:0; flex:1; min-width:150px;">
+            <label class="form-label">Tanggal Selesai</label>
+            <input type="date" class="form-input" id="stats-end-date" />
+          </div>
+          <div style="display:flex; gap:0.5rem;">
+            <button class="btn btn-primary" onclick="applyStatsFilter()">Apply Filter</button>
+            <button class="btn btn-outline" onclick="resetStatsFilter()">Reset</button>
+            <button class="btn btn-outline" style="border-color:#0b8a4f; color:#0b8a4f;" onclick="printStatsDashboard()">🖨️ Cetak Dashboard</button>
+          </div>
+        </div>
+      </div>
+
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;">
         <div class="card">
           <div class="card-header"><strong>Customer Satisfaction</strong></div>
@@ -102,6 +176,53 @@
           <div class="card-header"><strong>Status Overview</strong></div>
           <div class="card-body" id="status-overview"></div>
         </div>
+      </div>
+
+      <!-- Charts Section -->
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-top:1.5rem;">
+        <div class="card">
+          <div class="card-header"><strong>Booking Status Distribution</strong></div>
+          <div class="card-body" style="position:relative; height:320px; display:flex; justify-content:center; align-items:center;">
+            <canvas id="chart-status" style="max-height: 290px;"></canvas>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><strong>Pest Type Distribution</strong></div>
+          <div class="card-body" style="position:relative; height:320px; display:flex; justify-content:center; align-items:center;">
+            <canvas id="chart-pest" style="max-height: 290px;"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: REPORTS -->
+    <div class="tab-panel" id="tab-reports">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem;">
+        <h2 style="font-size:1.5rem; font-weight:800;">Service Reports</h2>
+        <button class="btn btn-outline btn-sm no-print" onclick="fetchReports()">🔄 Refresh</button>
+      </div>
+
+      <!-- Filter & Search Bar for Reports -->
+      <div class="card no-print" style="margin-bottom:1.5rem;">
+        <div class="card-body" style="display:flex; gap:1rem; align-items:flex-end; flex-wrap:wrap; padding:1rem;">
+          <div class="form-group" style="margin:0; flex:2; min-width:200px;">
+            <label class="form-label">Cari Laporan</label>
+            <input type="text" class="form-input" id="report-search-input" placeholder="Cari No. Booking, Customer, atau Teknisi..." oninput="filterReports()" />
+          </div>
+          <div class="form-group" style="margin:0; flex:1; min-width:150px;">
+            <label class="form-label">Tanggal Mulai</label>
+            <input type="date" class="form-input" id="report-start-date" onchange="filterReports()" />
+          </div>
+          <div class="form-group" style="margin:0; flex:1; min-width:150px;">
+            <label class="form-label">Tanggal Selesai</label>
+            <input type="date" class="form-input" id="report-end-date" onchange="filterReports()" />
+          </div>
+          <button class="btn btn-outline" style="border-color:#0b8a4f; color:#0b8a4f;" onclick="printReportsList()">🖨️ Cetak Ringkasan</button>
+        </div>
+      </div>
+
+      <div id="reports-list-container">
+        <div class="empty-state"><div class="empty-icon">📋</div><p>Belum ada laporan.</p></div>
       </div>
     </div>
 
