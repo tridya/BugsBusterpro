@@ -135,8 +135,6 @@ function seedData() {
     .run('tech-001', 'Budi Santoso', 'budi@bugbuster.com', '081234567890', techPassword, 'Termites,Rodents');
   db.prepare(`INSERT INTO technicians (id, name, email, phone, password, specialties) VALUES (?, ?, ?, ?, ?, ?)`)
     .run('tech-002', 'Siti Rahayu', 'siti@bugbuster.com', '081234567891', techPassword, 'Mosquitoes,Cockroaches');
-  db.prepare(`INSERT INTO technicians (id, name, email, phone, password, specialties) VALUES (?, ?, ?, ?, ?, ?)`)
-    .run('tech-003', 'Andi Wijaya', 'andi@bugbuster.com', '081234567892', techPassword, 'Bed Bugs,Ants');
 
   const pestTypes = [
     ['pest-001', 'Termites', 'Rayap kayu dan tanah'],
@@ -155,7 +153,6 @@ function seedData() {
   console.log('   Admin    : admin@bugbuster.com / admin123');
   console.log('   Teknisi  : budi@bugbuster.com / tech123');
   console.log('             siti@bugbuster.com / tech123');
-  console.log('             andi@bugbuster.com / tech123');
 }
 
 seedData();
