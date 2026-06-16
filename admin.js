@@ -45,6 +45,11 @@ async function doAdminLogin() {
   const password = document.getElementById('admin-password').value;
   if (!email || !password) return showToast('error', 'Email dan password wajib diisi');
 
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return showToast('error', 'Format email tidak valid (contoh: admin@bugbuster.com)');
+  }
+
   try {
     const res = await fetch('/api/auth/admin/login', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },

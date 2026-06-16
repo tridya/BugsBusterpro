@@ -41,6 +41,11 @@ async function doTechLogin() {
   const password = document.getElementById('tech-password').value;
   if (!email || !password) return showToast('error', 'Email dan password wajib diisi');
 
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return showToast('error', 'Format email tidak valid (contoh: budi@bugbuster.com)');
+  }
+
   try {
     const res = await fetch('/api/auth/technician/login', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },

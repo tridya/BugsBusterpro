@@ -184,6 +184,16 @@ app.post('/api/auth/customer/register', (req, res) => {
   if (!name || !email || !phone || !address || !password) {
     return res.status(400).json({ error: 'Semua field harus diisi' });
   }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({ error: 'Format email tidak valid' });
+  }
+  const phoneRegex = /^[0-9+]{8,15}$/;
+  if (!phoneRegex.test(phone)) {
+    return res.status(400).json({ error: 'Format nomor telepon tidak valid' });
+  }
+
   try {
     const existing = db.prepare('SELECT id FROM customers WHERE email = ?').get(email);
     if (existing) return res.status(400).json({ error: 'Email sudah terdaftar' });
@@ -203,6 +213,11 @@ app.post('/api/auth/customer/login', (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) return res.status(400).json({ error: 'Email dan password wajib diisi' });
 
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({ error: 'Format email tidak valid' });
+  }
+
   const customer = db.prepare('SELECT * FROM customers WHERE email = ?').get(email);
   if (!customer || !bcrypt.compareSync(password, customer.password)) {
     return res.status(401).json({ error: 'Email atau password salah' });
@@ -214,6 +229,13 @@ app.post('/api/auth/customer/login', (req, res) => {
 // Login admin
 app.post('/api/auth/admin/login', (req, res) => {
   const { email, password } = req.body;
+  if (!email || !password) return res.status(400).json({ error: 'Email dan password wajib diisi' });
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({ error: 'Format email tidak valid' });
+  }
+
   const admin = db.prepare('SELECT * FROM admins WHERE email = ?').get(email);
   if (!admin || !bcrypt.compareSync(password, admin.password)) {
     return res.status(401).json({ error: 'Email atau password salah' });
@@ -225,6 +247,13 @@ app.post('/api/auth/admin/login', (req, res) => {
 // Login technician
 app.post('/api/auth/technician/login', (req, res) => {
   const { email, password } = req.body;
+  if (!email || !password) return res.status(400).json({ error: 'Email dan password wajib diisi' });
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({ error: 'Format email tidak valid' });
+  }
+
   const tech = db.prepare('SELECT * FROM technicians WHERE email = ?').get(email);
   if (!tech || !bcrypt.compareSync(password, tech.password)) {
     return res.status(401).json({ error: 'Email atau password salah' });

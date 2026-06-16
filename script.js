@@ -140,6 +140,11 @@ async function doLogin() {
   const password = document.getElementById('login-password').value;
   if (!email || !password) return showToast('error', 'Email dan password wajib diisi');
 
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return showToast('error', 'Format email tidak valid (contoh: nama@email.com)');
+  }
+
   try {
     const res = await fetch('/api/auth/customer/login', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -165,6 +170,15 @@ async function doRegister() {
   const address = document.getElementById('reg-address').value.trim();
   const password = document.getElementById('reg-password').value;
   if (!name || !email || !phone || !address || !password) return showToast('error', 'Semua field wajib diisi');
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return showToast('error', 'Format email tidak valid (contoh: nama@email.com)');
+  }
+  const phoneRegex = /^[0-9+]{8,15}$/;
+  if (!phoneRegex.test(phone)) {
+    return showToast('error', 'Format nomor telepon tidak valid (8-15 digit)');
+  }
 
   try {
     const res = await fetch('/api/auth/customer/register', {
